@@ -1,0 +1,4 @@
+*.o
+chip-8-disassembler
+.git
+bin/
