@@ -28,8 +28,21 @@ fn main() -> io::Result<()>{
 
 fn disassemble(buffer: &[u8], pc: usize) {
 
-    //let code = &buffer[pc];
-    let mut first = buffer[pc];
-    let mut second = buffer[pc+1];
-    print!("{:04x} {:02x} {:02x}", (pc + 0x200), first, second);
+    let first = buffer[pc];
+    let second = buffer[pc+1];
+    let firstNibble = buffer[pc] >> 4;
+    print!("{:04x} {:02x} {:02x} ", (pc + 0x200), first, second);
+
+    match firstNibble {
+        0x0 =>
+            match buffer[pc+1] {
+                0x00 => print!("Empty Address"),
+                0xe0 => print!("{:10}", "CLS"),
+                0xee => print!("{:10}", "RET"),
+                _ => print!("UNKNOWN 0 INSTRUCTION"),
+            },
+        0x01 => print!("{:10} ${:01x}{:01x}", "JUMP", buffer[pc] & 0xf, buffer[pc+1]),
+        _=> print!("UNIMPLEMENTED INSTRUCTION"),
+    }
+
 }
